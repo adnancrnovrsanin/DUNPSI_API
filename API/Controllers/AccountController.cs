@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Persistance;
 
 namespace API.Controllers
 {
@@ -26,14 +27,16 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto) {
+        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == loginDto.Email);
 
             if (user == null) return Unauthorized("Invalid email");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
-            if (result.Succeeded) {
+            if (result.Succeeded)
+            {
                 return CreateUserObject(user);
             }
 
@@ -41,12 +44,15 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto) {
-            if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email)) {
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        {
+            if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
+            {
                 return BadRequest("Email taken");
             }
 
-            var user = new AppUser {
+            var user = new AppUser
+            {
                 Name = registerDto.Name,
                 Surname = registerDto.Surname,
                 Email = registerDto.Email,
@@ -55,7 +61,8 @@ namespace API.Controllers
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            if (result.Succeeded) {
+            if (result.Succeeded)
+            {
                 return CreateUserObject(user);
             }
 
@@ -64,15 +71,18 @@ namespace API.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<UserDto>> GetCurrentUser() {
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        {
             var user = await _userManager.Users
             .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
 
             return CreateUserObject(user);
         }
 
-        private UserDto CreateUserObject(AppUser user) {
-            return new UserDto {
+        private UserDto CreateUserObject(AppUser user)
+        {
+            return new UserDto
+            {
                 Name = user.Name,
                 Surname = user.Surname,
                 Email = user.Email,
