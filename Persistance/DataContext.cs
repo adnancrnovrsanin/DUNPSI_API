@@ -28,6 +28,7 @@ namespace Persistance
         public DbSet<SoftwareProject> SoftwareProjects { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<DeveloperTeamPlacement> DeveloperTeamPlacements { get; set; }
+        public DbSet<InitialProjectRequest> InitialProjectRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

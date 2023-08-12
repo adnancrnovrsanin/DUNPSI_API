@@ -1,15 +1,14 @@
 using Application.Core;
-using Domain.ModelsDTOs;
 using MediatR;
 using Persistance;
 
-namespace Application.Requirements
+namespace Application.SoftwareProjects
 {
-    public class Update
+    public class RejectRequest
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public RequirementDto Requirement { get; set; }
+            public Guid ProjectRequestId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -22,17 +21,15 @@ namespace Application.Requirements
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var requirement = await _context.Requirements.FindAsync(request.Requirement.Id);
+                var projectRequest = await _context.InitialProjectRequests.FindAsync(request.ProjectRequestId);
 
-                if (requirement == null) return null;
+                if (projectRequest == null) return null;
 
-                requirement.Name = request.Requirement.Name ?? requirement.Name;
-                requirement.Description = request.Requirement.Description ?? requirement.Description;
-                requirement.Status = Domain.RequirementApproveStatus.PENDING;
+                projectRequest.Rejected = true;
 
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if (!result) return Result<Unit>.Failure("Failed to update requirement");
+                if (!result) return Result<Unit>.Failure("Failed to reject project request");
 
                 return Result<Unit>.Success(Unit.Value);
             }

@@ -5,7 +5,7 @@ using Persistance;
 
 namespace Application.Requirements
 {
-    public class Update
+    public class UpdateStatus
     {
         public class Command : IRequest<Result<Unit>>
         {
@@ -26,9 +26,7 @@ namespace Application.Requirements
 
                 if (requirement == null) return null;
 
-                requirement.Name = request.Requirement.Name ?? requirement.Name;
-                requirement.Description = request.Requirement.Description ?? requirement.Description;
-                requirement.Status = Domain.RequirementApproveStatus.PENDING;
+                requirement.Status = request.Requirement.Status;
 
                 var result = await _context.SaveChangesAsync() > 0;
 

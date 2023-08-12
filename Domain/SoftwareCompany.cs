@@ -9,6 +9,7 @@ namespace Domain
         public string Contact { get; set; }
         public string Web { get; set; }
         public AppUser AppUser { get; set; }
+        public IEnumerable<InitialProjectRequest> InitialProjectRequests { get; set; }
         public IEnumerable<SoftwareProject> Projects { get; set; }
     }
 }

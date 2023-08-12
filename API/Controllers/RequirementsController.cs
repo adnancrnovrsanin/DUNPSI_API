@@ -41,5 +41,11 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new AssignDevelopers.Command {Requirement = requirementDto}));
         }
+
+        [HttpPut("update-status")]
+        public async Task<IActionResult> UpdateRequirementStatus(RequirementDto requirementDto)
+        {
+            return HandleResult(await Mediator.Send(new UpdateStatus.Command {Requirement = requirementDto}));
+        }
     }
 }

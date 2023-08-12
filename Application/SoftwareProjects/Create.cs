@@ -23,10 +23,11 @@ namespace Application.SoftwareProjects
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var client = await _context.SoftwareCompanies.FindAsync(request.SoftwareProject.ClientId);
+                var projectRequest = await _context.InitialProjectRequests.FindAsync(request.SoftwareProject.ProjectRequestId);
                 var manager = await _context.ProjectManagers.FindAsync(request.SoftwareProject.AssignedProjectManager);
+                var client = await _context.SoftwareCompanies.FindAsync(projectRequest.ClientId);
 
-                if (client == null || manager == null) return null;
+                if (projectRequest == null || manager == null || client == null) return null;
 
                 var team = new Team
                 {
@@ -38,9 +39,9 @@ namespace Application.SoftwareProjects
                 var project = new SoftwareProject
                 {
                     ClientId = client.Id,
-                    Name = request.SoftwareProject.Name,
-                    Description = request.SoftwareProject.Description,
-                    DueDate = DateTime.Parse(request.SoftwareProject.DueDate),
+                    Name = projectRequest.ProjectName,
+                    Description = projectRequest.ProjectDescription,
+                    DueDate = projectRequest.DueDate,
                     Finished = false,
                     AssignedTeam = team,
                     Client = client,
@@ -94,6 +95,7 @@ namespace Application.SoftwareProjects
                 _context.Teams.Add(team);
                 _context.ProjectPhases.AddRange(projectPhases);
                 _context.SoftwareProjects.Add(project);
+                _context.InitialProjectRequests.Remove(projectRequest);
 
                 var result = await _context.SaveChangesAsync() > 0;
 
