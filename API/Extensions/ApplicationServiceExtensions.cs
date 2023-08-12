@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.Developers;
 using Application.Interfaces;
 using Infrastructure.Photos;
 using Infrastructure.Security;
@@ -32,7 +33,7 @@ namespace API.Extensions
                     policy.AllowAnyMethod().AllowAnyHeader().AllowCredentials().WithOrigins("http://localhost:4200");
                 });
             });
-            // services.AddMediatR(typeof(List.Handler).Assembly);
+            services.AddMediatR(typeof(Details.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();

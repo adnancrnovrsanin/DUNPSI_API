@@ -12,7 +12,7 @@ namespace Application.ProductManagers
     {
         public class Query : IRequest<Result<ProductManagerDto>>
         {
-            public Guid Id { get; set; }
+            public string AppUserId { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result<ProductManagerDto>>
@@ -25,16 +25,16 @@ namespace Application.ProductManagers
                 _context = context;
                 _mapper = mapper;
             }
-
             public async Task<Result<ProductManagerDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var productManager = await _context.ProductManagers.Include(pm => pm.AppUser)
+                var manager = await _context.ProductManagers
+                    .Include(x => x.AppUser)
                     .ProjectTo<ProductManagerDto>(_mapper.ConfigurationProvider)
-                    .SingleOrDefaultAsync(pm => pm.Id == request.Id);
+                    .FirstOrDefaultAsync(x => x.AppUserId == request.AppUserId);
 
-                if (productManager == null) return null;
+                if (manager == null) return null;
 
-                return Result<ProductManagerDto>.Success(productManager);
+                return Result<ProductManagerDto>.Success(manager);
             }
         }
     }

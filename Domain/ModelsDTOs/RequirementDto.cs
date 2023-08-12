@@ -1,6 +1,6 @@
-namespace Domain
+namespace Domain.ModelsDTOs
 {
-    public class Requirement
+    public class RequirementDto
     {
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
@@ -8,8 +8,6 @@ namespace Domain
         public string Name { get; set; }
         public string Description { get; set; }
         public RequirementApproveStatus Status { get; set; }
-        public SoftwareProject Project { get; set; }
-        public ProjectPhase Phase { get; set; }
-        public IEnumerable<RequirementManagement> Assignees { get; set; }
+        public IEnumerable<DeveloperDto> AssignedDevelopers { get; set; }
     }
 }

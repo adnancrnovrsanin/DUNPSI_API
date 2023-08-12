@@ -30,6 +30,10 @@ namespace Application.Core
                 .ForMember(t => t.Developers, o => o.MapFrom(s => s.AssignedDevelopers.Select(d => d.Developer)));
             CreateMap<SoftwareProject, SoftwareProjectDto>()
                 .ForMember(p => p.DueDate, o => o.MapFrom(s => s.DueDate.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)));
+            CreateMap<SoftwareCompany, SoftwareCompanyDto>()
+                .ForMember(sc => sc.CurrentProjects, o => o.MapFrom(s => s.Projects.Where(p => p.Finished == false)));
+            CreateMap<Requirement, RequirementDto>()
+                .ForMember(r => r.AssignedDevelopers, o => o.MapFrom(s => s.Assignees.Select(a => a.Assignee)));
         }
     }
 }

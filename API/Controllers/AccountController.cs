@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Persistance;
 
 namespace API.Controllers
 {
@@ -51,12 +50,29 @@ namespace API.Controllers
                 return BadRequest("Email taken");
             }
 
+            Role role;
+            switch(registerDto.Role) {
+                case "PRODUCT_MANAGER":
+                    role = Role.PRODUCT_MANAGER;
+                    break;
+                case "PROJECT_MANAGER":
+                    role = Role.PROJECT_MANAGER;
+                    break;
+                case "DEVELOPER":
+                    role = Role.DEVELOPER;
+                    break;
+                default:
+                    ModelState.AddModelError("role", "Invalid role");
+                    return ValidationProblem();
+            }
+
             var user = new AppUser
             {
                 Name = registerDto.Name,
                 Surname = registerDto.Surname,
                 Email = registerDto.Email,
-                UserName = registerDto.Email
+                UserName = registerDto.Email,
+                Role = role
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -83,9 +99,11 @@ namespace API.Controllers
         {
             return new UserDto
             {
+                Id = user.Id,
                 Name = user.Name,
                 Surname = user.Surname,
                 Email = user.Email,
+                Role = user.Role.ToString(),
                 Token = _tokenService.CreateToken(user)
             };
         }

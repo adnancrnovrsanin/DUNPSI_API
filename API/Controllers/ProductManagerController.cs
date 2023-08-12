@@ -1,5 +1,6 @@
 using Application.ProductManagers;
 using Domain.ModelsDTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -12,10 +13,10 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Create.Command { ProductManager = productManagerDto }));
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductManager(Guid id)
+        [HttpGet("{appUserId}")]
+        public async Task<IActionResult> Get(string appUserId)
         {
-            return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
+            return HandleResult(await Mediator.Send(new Details.Query { AppUserId = appUserId }));
         }
     }
 }

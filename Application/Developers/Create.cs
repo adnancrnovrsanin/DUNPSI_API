@@ -33,7 +33,7 @@ namespace Application.Developers
                     AppUserId = request.Developer.AppUserId,
                     AppUser = user,
                     Position = request.Developer.Position,
-                    NumberOfActiveTasks = request.Developer.NumberOfActiveTasks
+                    NumberOfActiveTasks = 0
                 };
 
                 _context.Developers.Add(newDeveloper);

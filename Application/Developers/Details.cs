@@ -6,16 +6,16 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
 
-namespace Application.ProjectManagers
+namespace Application.Developers
 {
     public class Details
     {
-        public class Query : IRequest<Result<ProjectManagerDto>>
+        public class Query : IRequest<Result<DeveloperDto>>
         {
             public string AppUserId { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<ProjectManagerDto>>
+        public class Handler : IRequestHandler<Query, Result<DeveloperDto>>
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
@@ -25,16 +25,17 @@ namespace Application.ProjectManagers
                 _context = context;
                 _mapper = mapper;
             }
-            public async Task<Result<ProjectManagerDto>> Handle(Query request, CancellationToken cancellationToken)
+
+            public async Task<Result<DeveloperDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var manager = await _context.ProjectManagers
+                var developer = await _context.Developers
                     .Include(x => x.AppUser)
-                    .ProjectTo<ProjectManagerDto>(_mapper.ConfigurationProvider)
+                    .ProjectTo<DeveloperDto>(_mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync(x => x.AppUserId == request.AppUserId);
+                
+                if (developer == null) return null;
 
-                if (manager == null) return null;
-
-                return Result<ProjectManagerDto>.Success(manager);
+                return Result<DeveloperDto>.Success(developer);
             }
         }
     }
