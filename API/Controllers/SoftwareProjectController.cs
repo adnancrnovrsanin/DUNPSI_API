@@ -19,12 +19,6 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Details.Query { Id = projectId }));
         }
 
-        [HttpPut("reject-request/{projectRequestId}")]
-        public async Task<IActionResult> RejectRequest(Guid projectRequestId)
-        {
-            return HandleResult(await Mediator.Send(new RejectRequest.Command { ProjectRequestId = projectRequestId }));
-        }
-
         [HttpPost("initial-request")]
         public async Task<IActionResult> InitialRequest(InitialProjectRequestDto initialProjectRequestDto)
         {
@@ -53,6 +47,18 @@ namespace API.Controllers
         public async Task<IActionResult> UpdateRequirementLayout(UpdateRequirementLayoutDto updateRequirementLayoutDto)
         {
             return HandleResult(await Mediator.Send(new UpdateRequirementLayout.Command { UpdateRequest = updateRequirementLayoutDto }));
+        }
+
+        [HttpPut("finish-project/{projectId}")]
+        public async Task<IActionResult> FinishProject(Guid projectId)
+        {
+            return HandleResult(await Mediator.Send(new FinishProject.Command { ProjectId = projectId }));
+        }
+
+        [HttpPost("requirements/{projectId}")]
+        public async Task<IActionResult> GetRequirementsForApproval(RequirementsRequestParams requirementsRequestParams)
+        {
+            return HandleResult(await Mediator.Send(new GetRequirementsForApproval.Query { Params = requirementsRequestParams }));
         }
     }
 }

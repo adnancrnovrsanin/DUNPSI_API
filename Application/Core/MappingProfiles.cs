@@ -24,7 +24,8 @@ namespace Application.Core
             CreateMap<Developer, DeveloperDto>()
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.AppUser.Name))
                 .ForMember(d => d.Surname, o => o.MapFrom(s => s.AppUser.Surname))
-                .ForMember(d => d.Email, o => o.MapFrom(s => s.AppUser.Email));
+                .ForMember(d => d.Email, o => o.MapFrom(s => s.AppUser.Email))
+                .ForMember(d => d.AppUserId, o => o.MapFrom(s => s.AppUser.Id));
             CreateMap<ProjectManager, ProjectManagerDto>()
                 .ForMember(d => d.Name, o => o.MapFrom(s => s.AppUser.Name))
                 .ForMember(d => d.Surname, o => o.MapFrom(s => s.AppUser.Surname))
@@ -48,7 +49,8 @@ namespace Application.Core
             CreateMap<Requirement, RequirementDto>()
                 .ForMember(r => r.AssignedDevelopers, o => o.MapFrom(s => s.Assignees.Select(a => a.Assignee)));
             CreateMap<InitialProjectRequest, InitialProjectRequestDto>();
-            CreateMap<ProjectPhase, ProjectPhaseDto>();
+            CreateMap<ProjectPhase, ProjectPhaseDto>()
+                .ForMember(p => p.Requirements, o => o.MapFrom(s => s.Requirements.Where(r => r.Status == RequirementApproveStatus.APPROVED)));
             CreateMap<Message, MessageDto>();
         }
     }

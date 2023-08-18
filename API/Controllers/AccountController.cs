@@ -31,7 +31,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == loginDto.Email);
+            var user = await _userManager.Users.Include(u => u.Photos).FirstOrDefaultAsync(x => x.Email == loginDto.Email);
 
             if (user == null) return Unauthorized("Invalid email");
 
@@ -97,7 +97,7 @@ namespace API.Controllers
         {
             if (await _userManager.Users.AnyAsync(x => x.Email == registerRequest.Email))
             {
-                return BadRequest("Email taken");
+                return BadRequest("User with this email already exists");
             }
 
             var user = new AppUser
@@ -147,7 +147,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUser(string id)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+            var user = await _userManager.Users.Include(u => u.Photos).FirstOrDefaultAsync(x => x.Id == id);
 
             if (user == null) return NotFound();
 
@@ -157,7 +157,7 @@ namespace API.Controllers
         [HttpGet("email/{email}")]
         public async Task<ActionResult<UserDto>> GetUserByEmail(string email)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == email);
+            var user = await _userManager.Users.Include(u => u.Photos).FirstOrDefaultAsync(x => x.Email == email);
 
             if (user == null) return NotFound();
 
@@ -183,6 +183,8 @@ namespace API.Controllers
                 Surname = user.Surname,
                 Email = user.Email,
                 Role = user.Role.ToString(),
+                ProfileImageUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+                Photos = user.Photos,
                 Token = _tokenService.CreateToken(user)
             };
         }

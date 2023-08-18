@@ -29,13 +29,15 @@ namespace Persistance
         public DbSet<InitialProjectRequest> InitialProjectRequests { get; set; }
         public DbSet<Connection> Connections { get; set; }
         public DbSet<Group> Groups { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<DeveloperTeamPlacement>(dtp => {
-                dtp.HasKey(dt => new {dt.DeveloperId, dt.DevelopmentTeamId});
+            builder.Entity<DeveloperTeamPlacement>(dtp =>
+            {
+                dtp.HasKey(dt => new { dt.DeveloperId, dt.DevelopmentTeamId });
 
                 dtp.HasOne(x => x.Developer)
                     .WithMany(x => x.AssignedTeams)
@@ -45,19 +47,21 @@ namespace Persistance
                     .HasForeignKey(x => x.DevelopmentTeamId);
             });
 
-            builder.Entity<RequirementManagement>(rm => {
-                rm.HasKey(r => new {r.RequirementId, r.AssigneeId});
+            builder.Entity<RequirementManagement>(rm =>
+            {
+                rm.HasKey(r => new { r.RequirementId, r.AssigneeId });
 
                 rm.HasOne(x => x.Requirement)
                     .WithMany(x => x.Assignees)
                     .HasForeignKey(x => x.RequirementId);
-                
+
                 rm.HasOne(x => x.Assignee)
                     .WithMany(d => d.AssignedRequirements)
                     .HasForeignKey(x => x.AssigneeId);
             });
 
-            builder.Entity<Rating>(r => {
+            builder.Entity<Rating>(r =>
+            {
                 r.HasOne(x => x.Project)
                     .WithMany(x => x.DeveloperRatings)
                     .HasForeignKey(x => x.ProjectId);
@@ -65,17 +69,18 @@ namespace Persistance
                 r.HasOne(x => x.ProjectManager)
                     .WithMany(x => x.GivenRatings)
                     .HasForeignKey(x => x.ProjectManagerId);
-                
+
                 r.HasOne(x => x.Developer)
                     .WithMany(x => x.ReceivedRatings)
                     .HasForeignKey(x => x.DeveloperId);
             });
 
-            builder.Entity<Message>(m => {
+            builder.Entity<Message>(m =>
+            {
                 m.HasOne(x => x.Sender)
                     .WithMany(x => x.MessagesSent)
                     .HasForeignKey(x => x.SenderId);
-                
+
                 m.HasOne(x => x.Recipient)
                     .WithMany(x => x.MessagesReceived)
                     .HasForeignKey(x => x.RecipientId);

@@ -43,12 +43,15 @@ namespace Application.Requirements
                         Requirement = requirement
                     };
 
+                    dev.NumberOfActiveTasks++;
                     developers.Add(placement);
                 }
 
+                _context.Developers.UpdateRange(developers.Select(d => d.Assignee));
                 _context.RequirementManagements.AddRange(developers);
 
                 requirement.Assignees = developers;
+                _context.Requirements.Update(requirement);
 
                 var result = await _context.SaveChangesAsync() > 0;
 

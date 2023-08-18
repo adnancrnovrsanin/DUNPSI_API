@@ -7,6 +7,7 @@ using API.SignalR;
 using Application.Core;
 using Application.Developers;
 using Application.Interfaces;
+using Infrastructure.Email;
 using Infrastructure.Photos;
 using Infrastructure.Repositories;
 using Infrastructure.Security;
@@ -42,8 +43,8 @@ namespace API.Extensions
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<LogUserActivity>();
-            // services.AddScoped<EmailSender>();
-            // services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
+            services.AddScoped<EmailSender>();
+            services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
             services.AddSignalR();
             services.AddSingleton<PresenceTracker>();
 

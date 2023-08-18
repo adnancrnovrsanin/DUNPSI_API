@@ -1,3 +1,5 @@
+using Domain;
+
 namespace API.DTOs
 {
     public class UserDto
@@ -9,5 +11,6 @@ namespace API.DTOs
         public string? ProfileImageUrl { get; set; }
         public string Role { get; set; }
         public string Token { get; set; }
+        public ICollection<Photo> Photos { get; set; }
     }
 }

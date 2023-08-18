@@ -30,5 +30,11 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new CurrentProject.Query { ManagerId = managerId }));
         }
+
+        [HttpGet("project-history/{managerId}")]
+        public async Task<IActionResult> GetProjectHistory(Guid managerId)
+        {
+            return HandleResult(await Mediator.Send(new ProjectHistory.Query { ManagerId = managerId }));
+        }
     }
 }

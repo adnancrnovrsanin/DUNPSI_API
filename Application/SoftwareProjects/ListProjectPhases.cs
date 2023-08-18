@@ -30,6 +30,7 @@ namespace Application.SoftwareProjects
             {
                 var projectPhases = await _context.ProjectPhases
                     .Include(p => p.Requirements)
+                    .ThenInclude(r => r.Assignees)
                     .Where(x => x.ProjectId == request.ProjectId)
                     .ProjectTo<ProjectPhaseDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);

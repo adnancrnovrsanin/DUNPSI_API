@@ -37,11 +37,17 @@ namespace Application.SoftwareProjects
 
                     foreach (var requirement in projectPhase.Requirements)
                     {
-                        var reqDb = await _context.Requirements.SingleOrDefaultAsync(r => r.Id == requirement.Id);
+                        var reqDb = await _context.Requirements.Include(r => r.Assignees).ThenInclude(a => a.Assignee).SingleOrDefaultAsync(r => r.Id == requirement.Id);
                         if (reqDb == null) return null;
                         reqDb.PhaseId = phaseDb.Id;
                         reqDb.Phase = phaseDb;
                         reqDb.SerialNumber = requirement.SerialNumber;
+
+                        if (phaseDb.Name == "Done") {
+                            foreach(var assignee in reqDb.Assignees) {
+                                assignee.Assignee.NumberOfActiveTasks--;
+                            }
+                        }
 
                         requirements.Add(reqDb);
                         phaseDb.Requirements.Add(reqDb);

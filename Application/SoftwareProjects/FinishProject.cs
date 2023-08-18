@@ -1,17 +1,14 @@
 using Application.Core;
-using Application.SoftwareProjects.DTOs;
-using Domain.ModelsDTOs;
 using MediatR;
 using Persistance;
 
-namespace Application.Requirements
+namespace Application.SoftwareProjects
 {
-    public class UpdateStatus
+    public class FinishProject
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public Guid Id { get; set; }
-            public string Status { get; set; }
+            public Guid ProjectId { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -24,15 +21,17 @@ namespace Application.Requirements
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var requirement = await _context.Requirements.FindAsync(request.Id);
+                var project = await _context.SoftwareProjects.FindAsync(request.ProjectId);
 
-                if (requirement == null) return null;
+                if (project == null) return null;
 
-                requirement.Status = Converters.ConvertToRequirementApproveStatus(request.Status);
+                project.Finished = true;
+
+                _context.SoftwareProjects.Update(project);
 
                 var result = await _context.SaveChangesAsync() > 0;
 
-                if (!result) return Result<Unit>.Failure("Failed to update requirement");
+                if (!result) return Result<Unit>.Failure("Failed to finish project");
 
                 return Result<Unit>.Success(Unit.Value);
             }
