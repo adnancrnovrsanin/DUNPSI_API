@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Persistance;
 
 namespace API.Controllers
 {
@@ -17,12 +18,14 @@ namespace API.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly TokenService _tokenService;
+        private readonly DataContext _context;
 
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TokenService tokenService)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TokenService tokenService, DataContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _context = context;
         }
 
         [HttpPost("login")]
@@ -51,7 +54,8 @@ namespace API.Controllers
             }
 
             Role role;
-            switch(registerDto.Role) {
+            switch (registerDto.Role)
+            {
                 case "PRODUCT_MANAGER":
                     role = Role.PRODUCT_MANAGER;
                     break;
@@ -60,6 +64,9 @@ namespace API.Controllers
                     break;
                 case "DEVELOPER":
                     role = Role.DEVELOPER;
+                    break;
+                case "SOFTWARE_COMPANY":
+                    role = Role.SOFTWARE_COMPANY;
                     break;
                 default:
                     ModelState.AddModelError("role", "Invalid role");
@@ -83,6 +90,78 @@ namespace API.Controllers
             }
 
             return BadRequest("Problem registering user");
+        }
+
+        [HttpPost("register-company")]
+        public async Task<ActionResult<CompanyRegisterResponse>> RegisterCompany(CompanyRegisterRequest registerRequest)
+        {
+            if (await _userManager.Users.AnyAsync(x => x.Email == registerRequest.Email))
+            {
+                return BadRequest("Email taken");
+            }
+
+            var user = new AppUser
+            {
+                Name = registerRequest.Name,
+                Surname = registerRequest.Surname,
+                Email = registerRequest.Email,
+                UserName = registerRequest.Email,
+                Role = Role.SOFTWARE_COMPANY
+            };
+
+            var result = await _userManager.CreateAsync(user, registerRequest.Password);
+
+            if (!result.Succeeded) return BadRequest("Problem registering user");
+
+            if (await _context.SoftwareCompanies.Include(sc => sc.AppUser).AnyAsync(x => x.AppUser.Email == registerRequest.Email))
+                return BadRequest("Software company with this user already exists");
+
+            var softwareCompany = new SoftwareCompany
+            {
+                Name = registerRequest.CompanyName,
+                Address = registerRequest.Address,
+                Contact = registerRequest.Contact,
+                Web = registerRequest.Web,
+                AppUser = user
+            };
+
+            _context.SoftwareCompanies.Add(softwareCompany);
+
+            var result2 = await _context.SaveChangesAsync() > 0;
+
+            if (!result2) return BadRequest("Problem registering software company");
+
+            return Ok(
+                new CompanyRegisterResponse
+                {
+                    User = CreateUserObject(user),
+                    Id = softwareCompany.Id,
+                    CompanyName = softwareCompany.Name,
+                    Address = softwareCompany.Address,
+                    Contact = softwareCompany.Contact,
+                    Web = softwareCompany.Web
+                }
+            );
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserDto>> GetUser(string id)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (user == null) return NotFound();
+
+            return CreateUserObject(user);
+        }
+
+        [HttpGet("email/{email}")]
+        public async Task<ActionResult<UserDto>> GetUserByEmail(string email)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == email);
+
+            if (user == null) return NotFound();
+
+            return CreateUserObject(user);
         }
 
         [Authorize]

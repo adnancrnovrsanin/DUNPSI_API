@@ -29,6 +29,7 @@ namespace Application.SoftwareProjects
             public async Task<Result<SoftwareProjectDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var softwareProject = await _context.SoftwareProjects
+                    .Include(sp => sp.AssignedTeam)
                     .ProjectTo<SoftwareProjectDto>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync(pm => pm.Id == request.Id);
 

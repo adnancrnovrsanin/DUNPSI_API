@@ -7,7 +7,7 @@ namespace Domain
         public string CertificateUrl { get; set; }
         public int YearsOfExperience { get; set; }
         public AppUser AppUser { get; set; }
-        public IEnumerable<Team> ManagedTeams { get; set; }
-        public IEnumerable<Rating> GivenRatings { get; set; }
+        public ICollection<Team> ManagedTeams { get; set; }
+        public ICollection<Rating> GivenRatings { get; set; }
     }
 }

@@ -36,6 +36,9 @@ namespace Persistance.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime>("LastActive")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
 
@@ -61,6 +64,9 @@ namespace Persistance.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ProfileImagePublicId")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ProfileImageUrl")
                         .HasColumnType("TEXT");
@@ -91,6 +97,24 @@ namespace Persistance.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Connection", b =>
+                {
+                    b.Property<string>("ConnectionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GroupName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ConnectionId");
+
+                    b.HasIndex("GroupName");
+
+                    b.ToTable("Connections");
                 });
 
             modelBuilder.Entity("Domain.Developer", b =>
@@ -130,6 +154,16 @@ namespace Persistance.Migrations
                     b.ToTable("DeveloperTeamPlacements");
                 });
 
+            modelBuilder.Entity("Domain.Group", b =>
+                {
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Name");
+
+                    b.ToTable("Groups");
+                });
+
             modelBuilder.Entity("Domain.InitialProjectRequest", b =>
                 {
                     b.Property<Guid>("Id")
@@ -167,13 +201,25 @@ namespace Persistance.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("DateTimeRead")
+                    b.Property<DateTime?>("DateRead")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DateTimeSent")
+                    b.Property<DateTime>("MessageSent")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("RecipientDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RecipientEmail")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RecipientId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("SenderDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SenderEmail")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SenderId")
@@ -303,6 +349,9 @@ namespace Persistance.Migrations
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("SerialNumber")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
@@ -544,6 +593,13 @@ namespace Persistance.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Connection", b =>
+                {
+                    b.HasOne("Domain.Group", null)
+                        .WithMany("Connections")
+                        .HasForeignKey("GroupName");
                 });
 
             modelBuilder.Entity("Domain.Developer", b =>
@@ -798,6 +854,11 @@ namespace Persistance.Migrations
                     b.Navigation("AssignedTeams");
 
                     b.Navigation("ReceivedRatings");
+                });
+
+            modelBuilder.Entity("Domain.Group", b =>
+                {
+                    b.Navigation("Connections");
                 });
 
             modelBuilder.Entity("Domain.ProjectManager", b =>

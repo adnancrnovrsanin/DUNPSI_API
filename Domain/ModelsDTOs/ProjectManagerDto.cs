@@ -9,6 +9,6 @@ namespace Domain.ModelsDTOs
         public string Email { get; set; }
         public string CertificateUrl { get; set; }
         public int YearsOfExperience { get; set; }  
-        public Guid CurrentTeamId { get; set; }  
+        public Guid? CurrentTeamId { get; set; }  
     }
 }

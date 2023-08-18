@@ -31,7 +31,6 @@ namespace Application.Teams
                     .Include(t => t.AssignedDevelopers)
                     .ThenInclude(dt => dt.Developer)
                     .Include(t => t.Manager)
-                    .Include(t => t.Project)
                     .ProjectTo<TeamDto>(_mapper.ConfigurationProvider)
                     .SingleOrDefaultAsync(t => t.Id == request.Id);
 

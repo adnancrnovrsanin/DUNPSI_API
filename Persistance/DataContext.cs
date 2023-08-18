@@ -1,8 +1,6 @@
 using Domain;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Persistance
 {
@@ -29,6 +27,8 @@ namespace Persistance
         public DbSet<Team> Teams { get; set; }
         public DbSet<DeveloperTeamPlacement> DeveloperTeamPlacements { get; set; }
         public DbSet<InitialProjectRequest> InitialProjectRequests { get; set; }
+        public DbSet<Connection> Connections { get; set; }
+        public DbSet<Group> Groups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

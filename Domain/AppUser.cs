@@ -7,8 +7,10 @@ namespace Domain
         public string Name { get; set; }
         public string Surname { get; set; }
         public string ProfileImageUrl { get; set; }
+        public string ProfileImagePublicId { get; set; }
         public Role Role { get; set; }
-        public IEnumerable<Message> MessagesSent { get; set; }
-        public IEnumerable<Message> MessagesReceived { get; set; }
+        public DateTime LastActive { get; set; } = DateTime.UtcNow;
+        public ICollection<Message> MessagesSent { get; set; }
+        public ICollection<Message> MessagesReceived { get; set; }
     }
 }

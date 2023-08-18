@@ -8,6 +8,6 @@ namespace Domain
         public string Name { get; set; }
         public string Description { get; set; }
         public SoftwareProject Project { get; set; }
-        public IEnumerable<Requirement> Requirements { get; set; }
+        public ICollection<Requirement> Requirements { get; set; }
     }
 }

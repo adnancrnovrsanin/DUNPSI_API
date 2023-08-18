@@ -5,5 +5,6 @@ namespace Domain
         PRODUCT_MANAGER,
         PROJECT_MANAGER,
         DEVELOPER,
+        SOFTWARE_COMPANY
     }
 }

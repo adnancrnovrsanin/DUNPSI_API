@@ -2,11 +2,13 @@ using Application.Core;
 using Domain;
 using Domain.ModelsDTOs;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistance;
 
 namespace Application.SoftwareProjects
 {
-    public class InitialRequest
+    public class
+    InitialRequest
     {
         public class Command : IRequest<Result<Unit>>
         {
@@ -23,12 +25,17 @@ namespace Application.SoftwareProjects
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var initialProjectRequest = new InitialProjectRequest {
+                var client = await _context.SoftwareCompanies.SingleOrDefaultAsync(x => x.Id == request.InitialProjectRequest.ClientId);
+
+                if (client == null) return null;
+
+                var initialProjectRequest = new InitialProjectRequest
+                {
                     ProjectName = request.InitialProjectRequest.ProjectName,
                     ProjectDescription = request.InitialProjectRequest.ProjectDescription,
                     DueDate = DateTime.Parse(request.InitialProjectRequest.DueDate),
                     Rejected = false,
-                    ClientId = request.InitialProjectRequest.ClientId
+                    ClientId = client.Id
                 };
 
                 _context.InitialProjectRequests.Add(initialProjectRequest);

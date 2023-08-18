@@ -6,6 +6,6 @@ namespace Domain
         public Guid ProjectManagerId { get; set; }
         public SoftwareProject Project { get; set; }
         public ProjectManager Manager { get; set; }
-        public IEnumerable<DeveloperTeamPlacement> AssignedDevelopers { get; set; }
+        public ICollection<DeveloperTeamPlacement> AssignedDevelopers { get; set; }
     }
 }

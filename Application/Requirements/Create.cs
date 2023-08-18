@@ -26,25 +26,33 @@ namespace Application.Requirements
             {
                 var project = await _context.SoftwareProjects
                     .Include(x => x.Phases)
+                    .ThenInclude(x => x.Requirements)
                     .SingleOrDefaultAsync(x => x.Id == request.Requirement.ProjectId);
-                var phase = await _context.ProjectPhases.FindAsync(request.Requirement.PhaseId);
                 var requirementPhase = project.Phases.SingleOrDefault(x => x.Name == "Requirements Analysis");
 
-                if (project == null || phase == null) return null;
+                if (project == null) return null;
 
                 var requirement = new Requirement
                 {
                     Name = request.Requirement.Name,
                     Description = request.Requirement.Description,
-                    Status = RequirementApproveStatus.PENDING,
+                    Status = (request.Requirement.Status == "APPROVED") ? RequirementApproveStatus.APPROVED : RequirementApproveStatus.PENDING,
                     ProjectId = request.Requirement.ProjectId,
                     PhaseId = requirementPhase.Id,
                     Project = project,
-                    Phase = phase,
+                    Phase = requirementPhase,
                     Assignees = new List<RequirementManagement>()
                 };
 
+                foreach(var req in requirementPhase.Requirements)
+                {
+                    req.SerialNumber++;
+                }
+                _context.Requirements.UpdateRange(requirementPhase.Requirements);
+                
                 _context.Requirements.Add(requirement);
+                requirementPhase.Requirements.Add(requirement);
+
 
                 var result = await _context.SaveChangesAsync() > 0;
 

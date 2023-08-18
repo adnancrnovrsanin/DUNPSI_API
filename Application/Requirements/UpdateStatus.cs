@@ -26,7 +26,7 @@ namespace Application.Requirements
 
                 if (requirement == null) return null;
 
-                requirement.Status = request.Requirement.Status;
+                requirement.Status = Converters.ConvertToRequirementApproveStatus(request.Requirement.Status);
 
                 var result = await _context.SaveChangesAsync() > 0;
 

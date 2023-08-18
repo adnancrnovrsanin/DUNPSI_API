@@ -7,9 +7,10 @@ namespace Domain
         public Guid PhaseId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int SerialNumber { get; set; }
         public RequirementApproveStatus Status { get; set; }
         public SoftwareProject Project { get; set; }
         public ProjectPhase Phase { get; set; }
-        public IEnumerable<RequirementManagement> Assignees { get; set; }
+        public ICollection<RequirementManagement> Assignees { get; set; }
     }
 }

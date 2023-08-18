@@ -47,5 +47,11 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new UpdateStatus.Command {Requirement = requirementDto}));
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRequirement(Guid id)
+        {
+            return HandleResult(await Mediator.Send(new Delete.Command {Id = id}));
+        }
     }
 }

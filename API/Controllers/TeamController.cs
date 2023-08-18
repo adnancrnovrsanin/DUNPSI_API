@@ -9,5 +9,10 @@ namespace API.Controllers
         public async Task<IActionResult> DeveloperAssignment(TeamCreateDto teamCreateDto) {
             return HandleResult(await Mediator.Send(new DeveloperAssignment.Command { Team = teamCreateDto }));
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTeam(Guid id) {
+            return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
+        }
     }
 }

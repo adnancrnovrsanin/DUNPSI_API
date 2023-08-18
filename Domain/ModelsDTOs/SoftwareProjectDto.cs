@@ -9,5 +9,6 @@ namespace Domain.ModelsDTOs
         public string DueDate { get; set; }
         public bool Finished { get; set; }
         public Guid AssignedTeamId { get; set; }
+        public TeamDto AssignedTeam { get; set; }
     }
 }

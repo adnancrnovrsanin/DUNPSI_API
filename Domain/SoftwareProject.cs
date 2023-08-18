@@ -11,7 +11,7 @@ namespace Domain
         public Guid AssignedTeamId { get; set; }
         public Team AssignedTeam { get; set; }
         public SoftwareCompany Client { get; set; }
-        public IEnumerable<ProjectPhase> Phases { get; set; }
-        public IEnumerable<Rating> DeveloperRatings { get; set; }
+        public ICollection<ProjectPhase> Phases { get; set; }
+        public ICollection<Rating> DeveloperRatings { get; set; }
     }
 }

@@ -8,5 +8,6 @@ namespace Domain.ModelsDTOs
         public string DueDate { get; set; }
         public bool Rejected { get; set; }
         public Guid ClientId { get; set; }
+        public SoftwareCompanyDto Client { get; set; }
     }
 }

@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Services;
+using API.SignalR;
 using Application.Core;
 using Application.Developers;
 using Application.Interfaces;
 using Infrastructure.Photos;
+using Infrastructure.Repositories;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -37,9 +40,12 @@ namespace API.Extensions
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddScoped<IUserAccessor, UserAccessor>();
             services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<LogUserActivity>();
             // services.AddScoped<EmailSender>();
             // services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
-            // services.AddSignalR();
+            services.AddSignalR();
+            services.AddSingleton<PresenceTracker>();
 
             return services;
         }

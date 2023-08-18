@@ -18,5 +18,17 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new Details.Query { AppUserId = appUserId }));
         }
+
+        [HttpGet("free-project-managers")]
+        public async Task<IActionResult> GetFreeProjectManagers()
+        {
+            return HandleResult(await Mediator.Send(new ListFreeProjectManagers.Query()));
+        }
+
+        [HttpGet("current-project/{managerId}")]
+        public async Task<IActionResult> GetCurrentProject(Guid managerId)
+        {
+            return HandleResult(await Mediator.Send(new CurrentProject.Query { ManagerId = managerId }));
+        }
     }
 }

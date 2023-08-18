@@ -21,19 +21,35 @@ namespace Application.Core
             CreateMap<Rating, Rating>();
             CreateMap<Requirement, Requirement>();
 
-            CreateMap<Developer, DeveloperDto>();
+            CreateMap<Developer, DeveloperDto>()
+                .ForMember(d => d.Name, o => o.MapFrom(s => s.AppUser.Name))
+                .ForMember(d => d.Surname, o => o.MapFrom(s => s.AppUser.Surname))
+                .ForMember(d => d.Email, o => o.MapFrom(s => s.AppUser.Email));
             CreateMap<ProjectManager, ProjectManagerDto>()
+                .ForMember(d => d.Name, o => o.MapFrom(s => s.AppUser.Name))
+                .ForMember(d => d.Surname, o => o.MapFrom(s => s.AppUser.Surname))
+                .ForMember(d => d.Email, o => o.MapFrom(s => s.AppUser.Email))
                 .ForMember(d => d.CurrentTeamId, o => o.MapFrom(s => s.ManagedTeams.FirstOrDefault(t => t.Project.Finished == false).Id));
-            CreateMap<ProductManager, ProductManagerDto>();
+            CreateMap<ProductManager, ProductManagerDto>()
+                .ForMember(d => d.Name, o => o.MapFrom(s => s.AppUser.Name))
+                .ForMember(d => d.Surname, o => o.MapFrom(s => s.AppUser.Surname))
+                .ForMember(d => d.Email, o => o.MapFrom(s => s.AppUser.Email));
             CreateMap<Team, TeamDto>()
                 .ForMember(t => t.ProjectId, o => o.MapFrom(s => s.Project.Id))
                 .ForMember(t => t.Developers, o => o.MapFrom(s => s.AssignedDevelopers.Select(d => d.Developer)));
             CreateMap<SoftwareProject, SoftwareProjectDto>()
                 .ForMember(p => p.DueDate, o => o.MapFrom(s => s.DueDate.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture)));
             CreateMap<SoftwareCompany, SoftwareCompanyDto>()
+                .ForMember(d => d.Email, o => o.MapFrom(s => s.AppUser.Email))
+                .ForMember(d => d.RepresentativeName, o => o.MapFrom(s => s.AppUser.Name))
+                .ForMember(d => d.RepresentativeSurname, o => o.MapFrom(s => s.AppUser.Surname))
+                .ForMember(d => d.CompanyName, o => o.MapFrom(s => s.Name))
                 .ForMember(sc => sc.CurrentProjects, o => o.MapFrom(s => s.Projects.Where(p => p.Finished == false)));
             CreateMap<Requirement, RequirementDto>()
                 .ForMember(r => r.AssignedDevelopers, o => o.MapFrom(s => s.Assignees.Select(a => a.Assignee)));
+            CreateMap<InitialProjectRequest, InitialProjectRequestDto>();
+            CreateMap<ProjectPhase, ProjectPhaseDto>();
+            CreateMap<Message, MessageDto>();
         }
     }
 }

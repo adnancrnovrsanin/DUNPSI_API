@@ -7,8 +7,8 @@ namespace Domain
         public string Position { get; set; }
         public int NumberOfActiveTasks { get; set; }
         public AppUser AppUser { get; set; }
-        public IEnumerable<RequirementManagement> AssignedRequirements { get; set; }
-        public IEnumerable<Rating> ReceivedRatings { get; set; }
-        public IEnumerable<DeveloperTeamPlacement> AssignedTeams { get; set; }
+        public ICollection<RequirementManagement> AssignedRequirements { get; set; }
+        public ICollection<Rating> ReceivedRatings { get; set; }
+        public ICollection<DeveloperTeamPlacement> AssignedTeams { get; set; }
     }
 }
